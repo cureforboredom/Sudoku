@@ -8,6 +8,7 @@ from werkzeug.exceptions import abort
 
 from sudoku.auth import login_required
 from sudoku.db import get_db
+from sudoku.api import new_board
 
 bp = Blueprint('main', __name__)
 
@@ -17,4 +18,6 @@ def index():
 
 @bp.route('/play')
 def play():
+  if not session.get('board_id'):
+    new_board()
   return render_template('main/play.html')

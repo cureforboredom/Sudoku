@@ -9,7 +9,7 @@ from sudoku.db import get_db
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
-@bp.route('/new_board')
+@bp.route('/new_board', methods=(['GET','POST']))
 def new_board():
   db = get_db()
   r = requests.get("https://sudoku-api.vercel.app/api/dosuku")
@@ -35,3 +35,14 @@ def new_board():
       )
       db.commit()
     return '', 204
+  
+@bp.route('/get_board')
+def get_board():
+  db = get_db()
+
+  board = json.loads(db.execute(
+    "SELECT board FROM boards WHERE id = ?",
+    (session["board_id"],)
+  ).fetchone()[0])
+  
+  return board
