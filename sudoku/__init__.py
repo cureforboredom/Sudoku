@@ -20,7 +20,7 @@ def create_app(test_config=None):
         pass
 
     @app.route('/images/pastime.png')
-    def hello():
+    def pastime():
         return app.send_static_file("pastime.png")
 
     from . import db
@@ -28,6 +28,9 @@ def create_app(test_config=None):
 
     from . import auth
     app.register_blueprint(auth.bp)
+    
+    from . import api
+    app.register_blueprint(api.bp)
 
     from . import main
     app.register_blueprint(main.bp)

@@ -5,6 +5,7 @@ description = "An online multiplayer sudoku app."
 dependencies = [
   "flask",
   "gunicorn",
+  "requests",
 ]
 
 [build-system]

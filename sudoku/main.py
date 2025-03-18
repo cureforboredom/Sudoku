@@ -1,5 +1,7 @@
+import requests, json
+
 from flask import (
-        Blueprint, flash, g, render_template, request, session, url_for
+  Blueprint, flash, g, render_template, request, session, url_for, jsonify
 )
 
 from werkzeug.exceptions import abort
@@ -11,7 +13,8 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/')
 def index():
-    db = get_db()
-    error = None
+  return render_template('main/index.html')
 
-    return render_template('main/index.html')
+@bp.route('/play')
+def play():
+  return render_template('main/play.html')
