@@ -1,5 +1,7 @@
 import requests, json
 
+from hashlib import sha1
+
 from flask import (
   Blueprint, request, session, url_for, jsonify
 )
@@ -38,11 +40,17 @@ def new_board():
   
 @bp.route('/get_board')
 def get_board():
+  hash = request.args.get('hash')
   db = get_db()
 
   board = json.loads(db.execute(
     "SELECT board FROM boards WHERE id = ?",
     (session["board_id"],)
   ).fetchone()[0])
-  
-  return board
+
+  new_hash = sha1(str(board).encode("utf-8")).hexdigest()
+
+  if not hash == new_hash:
+    return {"board": board, "hash": new_hash}
+  else:
+    return '', 204

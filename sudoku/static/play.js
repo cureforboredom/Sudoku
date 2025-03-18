@@ -1,5 +1,9 @@
 document.body.onload = init;
 
+current_board_hash = "";
+
+current_board = [];
+
 function init() {
   board = document.getElementById("board");
 
@@ -23,17 +27,20 @@ function init() {
 }
 
 const fetchBoard = async () => {
-  const r = await fetch("/api/get_board");
-  const data = await r.json();
-  return data;
+  const r = await fetch("/api/get_board?hash=" + current_board_hash);
+  if ((await r.status) != 204) {
+    const data = await r.json();
+    current_board_hash = data["hash"];
+    current_board = data["board"];
+  }
 };
 
 const update = async () => {
-  board = await fetchBoard();
+  await fetchBoard();
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       document.getElementById(i * 9 + j).innerHTML =
-        "<p>" + board[i][j][0] + "</p>";
+        "<p>" + current_board[i][j][0] + "</p>";
     }
   }
 };
