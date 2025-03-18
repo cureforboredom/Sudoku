@@ -11,6 +11,14 @@ from sudoku.db import get_db
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
+def load_board():
+  db = get_db()
+  return json.loads(db.execute(
+    "SELECT board FROM boards WHERE id = ?",
+    (session["board_id"],)
+  ).fetchone()[0])
+
+
 @bp.route('/new_board', methods=(['GET','POST']))
 def new_board():
   db = get_db()
@@ -43,10 +51,7 @@ def get_board():
   hash = request.args.get('hash')
   db = get_db()
 
-  board = json.loads(db.execute(
-    "SELECT board FROM boards WHERE id = ?",
-    (session["board_id"],)
-  ).fetchone()[0])
+  board = load_board()
 
   new_hash = sha1(str(board).encode("utf-8")).hexdigest()
 
@@ -54,3 +59,25 @@ def get_board():
     return {"board": board, "hash": new_hash}
   else:
     return '', 204
+  
+@bp.route('/modify_board', methods=['POST'])
+def modify_board():
+  db = get_db()
+
+  r = request.get_json()
+  y = r[0] // 9
+  x = r[0] % 9
+  v = r[1]
+
+  board = load_board()
+  
+  if board[y][x][1]:
+    board[y][x][0] = v
+  
+    db.execute(
+      "UPDATE boards SET board = ? WHERE id = ?",
+      (json.dumps(board), session["board_id"])
+    )
+    db.commit()
+
+  return '', 204
