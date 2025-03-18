@@ -2,11 +2,11 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %} - Sudoku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
     <nav>
-      <h1><a href="{{ url_for('index') }}">Sudoku</a></h1>
+      <h1>Sudoku</h1>
       <ul>
         {% if g.user %}
           <li><span>{{ g.user['username'] }}</span>

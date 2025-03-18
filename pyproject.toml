@@ -1,0 +1,11 @@
+[project]
+name = "sudoku"
+version = "1.0.0"
+description = "An online multiplayer sudoku app."
+dependencies = [
+  "flask",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
