@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, url_for
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -19,9 +19,9 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/hello')
+    @app.route('/images/pastime.png')
     def hello():
-        return "Hello, World!"
+        return app.send_static_file("pastime.png")
 
     from . import db
     db.init_app(app)
@@ -32,6 +32,5 @@ def create_app(test_config=None):
     from . import main
     app.register_blueprint(main.bp)
     app.add_url_rule('/', endpoint='index')
-
-
+    
     return app

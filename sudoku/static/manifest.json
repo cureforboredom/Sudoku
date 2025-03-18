@@ -1,0 +1,17 @@
+{
+    "name": "Sudoku",
+    "short_name": "Sudoku",
+    "theme_color": "#14161b",
+    "background_color": "#14161b",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "/images/pastime.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+  }
