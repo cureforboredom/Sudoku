@@ -58,7 +58,6 @@ def new_board():
 @bp.route('/get_board')
 def get_board():
   hash = request.args.get('hash')
-  db = get_db()
 
   board = load_board()
 
@@ -71,8 +70,6 @@ def get_board():
   
 @bp.route('/modify_board', methods=['POST'])
 def modify_board():
-  db = get_db()
-
   r = request.get_json()
   y = r[0] // 9
   x = r[0] % 9
@@ -82,7 +79,9 @@ def modify_board():
   
   if board[y][x][1]:
     board[y][x][0] = v
-  
+
+    db = get_db()
+
     db.execute(
       "UPDATE boards SET board = ? WHERE id = ?",
       (json.dumps(board), session["board_id"])
