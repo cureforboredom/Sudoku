@@ -26,10 +26,7 @@ function init() {
       }
       cell.id = i * 9 + j;
       cell.innerHTML = "<p>0</p>";
-      cell.onclick = function () {
-        document.getElementById("picker-container").style.display = "flex";
-        selected_cell = this;
-      };
+      cell.onclick = startMove;
 
       row.append(cell);
     }
@@ -72,6 +69,11 @@ function init() {
   window.setInterval(update, 1000);
 }
 
+function startMove() {
+  document.getElementById("picker-container").style.display = "flex";
+  selected_cell = this;
+}
+
 const fetchBoard = async () => {
   const r = await fetch("/api/get_board?hash=" + current_board_hash);
   if ((await r.status) != 204) {
@@ -86,12 +88,14 @@ const update = async () => {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       cell = document.getElementById(i * 9 + j);
-      if (!have_set_editable) {
-        if (current_board[i][j][1]) {
-          cell.classList.add("editable");
-        } else {
-          cell.classList.add("uneditable");
-        }
+      if (current_board[i][j][1]) {
+        cell.classList.remove("uneditable");
+        cell.classList.add("editable");
+        cell.onclick = startMove;
+      } else {
+        cell.classList.remove("editable");
+        cell.classList.add("uneditable");
+        cell.onclick = null;
       }
       cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
     }

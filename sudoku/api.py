@@ -3,7 +3,7 @@ import requests, json, logging
 from hashlib import sha1
 
 from flask import (
-  Blueprint, request, session, url_for, jsonify
+  Blueprint, g, request, session, url_for, jsonify
 )
 
 from sudoku.auth import login_required
@@ -89,3 +89,68 @@ def modify_board():
     db.commit()
 
   return '', 204
+
+@bp.route('/check_board')
+def check_board():
+  valid = "True"
+  
+  board = load_board()
+
+  # check that all rows are valid
+  if sum([
+    len(set([
+      cell[0] for cell in row
+    ])) for row in board
+  ]) != 81:
+    valid = "False"
+  
+  # check that all columns are valid
+  if sum([
+    len(set([
+      row[i][0] for row in board
+    ])) for i in range(9)
+  ]) != 81:
+    valid = "False"
+    
+  # check that all squares are valid
+  for i in range(0, 9, 3):
+    for j in range(0, 9, 3):
+      pairs = board[i][j: j+3]
+      pairs.extend(board[i+1][j: j+3])
+      pairs.extend(board[i+2][j: j+3])
+      if not len(set([pair[0] for pair in pairs])) == 9:
+        valid = "False"
+
+  if valid == "True" and session.get('user_id'):
+    db = get_db()
+    db.execute(
+      'INSERT INTO solved_boards (username, board_id) VALUES (?, ?)',
+      (g.user['username'], session['board_id'])
+    )
+    db.commit()
+
+  return valid
+
+@bp.route('/debug_set_valid_board')
+def debug_set_valid_board():
+  board = [
+    [[1, False],[2, False],[3, False],[4, False],[5, False],[6, False],[7, False],[8, False],[9, False]],
+    [[4, False],[5, False],[6, False],[7, False],[8, False],[9, False],[1, False],[2, False],[3, False]],
+    [[7, False],[8, False],[9, False],[1, False],[2, False],[3, False],[4, False],[5, False],[6, False]],
+    [[2, False],[3, False],[4, False],[5, False],[6, False],[7, False],[8, False],[9, False],[1, False]],
+    [[5, False],[6, False],[7, False],[8, False],[9, False],[1, False],[2, False],[3, False],[4, False]],
+    [[8, False],[9, False],[1, False],[2, False],[3, False],[4, False],[5, False],[6, False],[7, False]],
+    [[3, False],[4, False],[5, False],[6, False],[7, False],[8, False],[9, False],[1, False],[2, False]],
+    [[6, False],[7, False],[8, False],[9, False],[1, False],[2, False],[3, False],[4, False],[5, False]],
+    [[9, False],[1, False],[2, False],[3, False],[4, False],[5, False],[6, False],[7, False],[8, False]],
+  ]
+
+  db = get_db()
+
+  db.execute(
+    "UPDATE boards SET board = ? WHERE id = ?",
+    (json.dumps(board), session["board_id"])
+  )
+  db.commit()
+  
+  return '', 200

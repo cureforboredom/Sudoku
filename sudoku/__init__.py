@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, url_for
+from flask import Flask, url_for, g
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -19,14 +19,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/images/pastime.png')
-    def pastime():
-        return app.send_static_file("pastime.png")
-    
-    @app.route('/favicon.ico')
-    def favicon():
-        return app.send_static_file("pastime.png")
-
     from . import db
     db.init_app(app)
 
@@ -40,4 +32,21 @@ def create_app(test_config=None):
     app.register_blueprint(main.bp)
     app.add_url_rule('/', endpoint='index')
     
+    @app.route('/images/pastime.png')
+    def pastime():
+        return app.send_static_file("pastime.png")
+    
+    @app.route('/favicon.ico')
+    def favicon():
+        return app.send_static_file("pastime.png")
+
+    @app.before_request
+    def get_number_of_solves():
+      if g.user:
+        d = db.get_db()
+        g.solves = d.execute(
+          'select count(distinct board_id) as "count" from solved_boards where username = ?',
+          (g.user["username"],)
+        ).fetchone()['count']
+
     return app

@@ -21,10 +21,12 @@ def play():
   db = get_db();
   if not session.get('board_id'):
     new_board()
+  elif not db.execute('SELECT * FROM boards').fetchone():
+    new_board()
   elif session.get('board_id') != db.execute(
     "SELECT id FROM boards WHERE id = ?",
     (session.get('board_id'),)
-  ).fetchone():
+  ).fetchone()['id']:
     print("fixed it")
     new_board()
   return render_template('main/play.html')
