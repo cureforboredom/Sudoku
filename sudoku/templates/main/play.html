@@ -1,6 +1,12 @@
 {% extends "base.html" %} {% block title %}Play{% endblock %} {% block content
 %}
 <script src="{{ url_for('static', filename='play.js') }}"></script>
-<a href="{{ url_for('api.new_board') }}">New Board</a>
-<div id="board"></div>
+<section id="main">
+  <a href="{{ url_for('api.new_board') }}">New Board</a>
+  <div id="board"></div>
+  <div id="picker-container">
+    <div id="picker-closer"></div>
+    <div id="picker"></div>
+  </div>
+</section>
 {% endblock %}

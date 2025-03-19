@@ -22,6 +22,10 @@ def create_app(test_config=None):
     @app.route('/images/pastime.png')
     def pastime():
         return app.send_static_file("pastime.png")
+    
+    @app.route('/favicon.ico')
+    def favicon():
+        return app.send_static_file("pastime.png")
 
     from . import db
     db.init_app(app)
