@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, logging
 
 from hashlib import sha1
 
@@ -11,8 +11,18 @@ from sudoku.db import get_db
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
+logging.basicConfig(
+  encoding="utf-8",
+  format="{asctime} - {levelname} - {message}",
+  style="{",
+  datefmt="%Y-%m-%d %H:%M",
+  level=logging.DEBUG,
+)
+
 def load_board():
+  logging.debug("starting: load board. Get db.")
   db = get_db()
+  logging.debug("Get db result: %s", json.dumps(db))
   return json.loads(db.execute(
     "SELECT board FROM boards WHERE id = ?",
     (session["board_id"],)

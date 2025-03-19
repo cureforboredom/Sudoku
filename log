@@ -1,0 +1,3 @@
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 112-183-540
+INFO:werkzeug: * Detected change in '/var/home/cure/code/sudoku/sudoku/api.py', reloading
