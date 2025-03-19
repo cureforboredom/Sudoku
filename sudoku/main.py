@@ -18,6 +18,13 @@ def index():
 
 @bp.route('/play')
 def play():
+  db = get_db();
   if not session.get('board_id'):
+    new_board()
+  elif session.get('board_id') != db.execute(
+    "SELECT id FROM boards WHERE id = ?",
+    (session.get('board_id'),)
+  ).fetchone():
+    print("fixed it")
     new_board()
   return render_template('main/play.html')
