@@ -22,7 +22,6 @@ logging.basicConfig(
 def load_board():
   logging.debug("starting: load board. Get db.")
   db = get_db()
-  logging.debug("Get db result: %s", json.dumps(db))
   return json.loads(db.execute(
     "SELECT board FROM boards WHERE id = ?",
     (session["board_id"],)
