@@ -30,6 +30,6 @@ def play():
     ).fetchone()
     if not r:
       new_board()
-    elif r.fetchone()['id'] != session.get('board_id'):
+    elif r['id'] != session.get('board_id'):
       new_board()
   return render_template('main/play.html')

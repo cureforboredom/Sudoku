@@ -96,7 +96,7 @@ textarea:not([rows]) {
 body {
   background-color: #0c1515;
   color: rgb(255, 233, 217);
-  height: 70vh;
+  overflow: hidden;
 }
 
 nav,
