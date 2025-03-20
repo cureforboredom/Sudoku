@@ -8,6 +8,8 @@ have_set_editable = false;
 
 selected_cell = null;
 
+intervalID = null;
+
 function init() {
   dom_board = document.getElementById("board");
 
@@ -70,7 +72,12 @@ function init() {
 
   picker.append(clear);
 
-  window.setInterval(update, 1000);
+  intervalID = window.setInterval(update, 1000);
+}
+
+function win() {
+  window.clearInterval(intervalID);
+  alert("you win!");
 }
 
 function startMove() {
@@ -89,20 +96,29 @@ const fetchBoard = async () => {
 };
 
 const update = async () => {
-  await fetchBoard();
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      cell = document.getElementById(i * 9 + j);
-      if (current_board[i][j][1]) {
-        cell.classList.remove("uneditable");
-        cell.classList.add("editable");
-        cell.onclick = startMove;
-      } else {
-        cell.classList.remove("editable");
-        cell.classList.add("uneditable");
-        cell.onclick = null;
+  board = document.getElementById("board");
+  if (!board.innerHTML.includes("<p>0</p>")) {
+    const r = await fetch("/api/check_board");
+    if ((await r.text()) == "True") {
+      win();
+    }
+  } else {
+    console.log("here");
+    await fetchBoard();
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        cell = document.getElementById(i * 9 + j);
+        if (current_board[i][j][1]) {
+          cell.classList.remove("uneditable");
+          cell.classList.add("editable");
+          cell.onclick = startMove;
+        } else {
+          cell.classList.remove("editable");
+          cell.classList.add("uneditable");
+          cell.onclick = null;
+        }
+        cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
       }
-      cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
     }
   }
 };

@@ -99,6 +99,17 @@ body {
   overflow: hidden;
 }
 
+h1 {
+  width: 100vw;
+  font-size: 10vw;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+}
+
+h1 a {
+  text-decoration: none;
+}
+
 nav,
 ul {
   display: flex;
