@@ -26,6 +26,31 @@ def load_board():
     (session["board_id"],)
   ).fetchone()[0])
 
+def check_cell(x, y, v):
+  board = load_board()
+
+  if v in [board[y][i][0] for i in range(9)]:
+    bad_row = list(range(y * 9, y * 9 + 9))
+    return {"bad row": bad_row}
+
+  if v in [board[i][x][0] for i in range(9)]:
+    bad_column = list(range(x, x + 81, 9))
+    return {"bad column": bad_column}
+  
+  if v in [
+    cell[0] for row in board[
+      y // 3 * 3: y // 3 * 3 + 3
+    ] for cell in row[
+      x // 3 * 3: x // 3 * 3 + 3
+    ]
+  ]:
+    bad_square = []
+    for i in range(3):
+      start = ((y//3*3)+i)*9+(x//3*3)
+      bad_square+=list(range(start, start+3))
+    return {"bad square": bad_square}
+  
+  return "valid"
 
 @bp.route('/new_board', methods=(['GET','POST']))
 def new_board():
@@ -72,11 +97,16 @@ def modify_board():
   r = request.get_json()
   y = r[0] // 9
   x = r[0] % 9
-  v = r[1]
+  v = int(r[1])
 
   board = load_board()
   
-  if board[y][x][1]:
+  if board[y][x][1]: #editable
+    if v: #nonzero
+      valid = check_cell(x, y, v)
+      if valid != "valid":
+        return valid
+
     board[y][x][0] = v
 
     db = get_db()
@@ -87,7 +117,7 @@ def modify_board():
     )
     db.commit()
 
-  return '', 204
+  return {"valid": "valid"}
 
 @bp.route('/check_board')
 def check_board():

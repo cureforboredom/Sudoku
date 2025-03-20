@@ -94,8 +94,8 @@ textarea:not([rows]) {
 /****** END RESET ******/
 
 body {
-  background-color: rgb(15, 26, 26);
-  color: rgb(255, 247, 241);
+  background-color: #0c1515;
+  color: rgb(255, 233, 217);
 }
 
 nav,
@@ -120,7 +120,8 @@ li {
   width: fit-content;
   display: flex;
   flex-direction: column;
-  border: white solid 3px;
+  border: #303436 solid 15px;
+  border-radius: 20px;
 }
 
 .row {
@@ -136,24 +137,23 @@ li {
 }
 
 .cell {
-  font-size: min(2vh, 2vw);
+  font-size: 6vw;
   font-family: monospace;
-  padding-inline: min(2vh, 2vw);
-  padding-block: min(1vh, 1vw);
-  border: white solid 2px;
+  padding-inline: 2.5vw;
+  border: #303436 solid 5px;
   user-select: none;
 }
 
 .uneditable {
-  background-color: rgb(111, 61, 56);
+  background-color: #402320;
 }
 
 .border-right {
-  border-right: white solid 5px;
+  border-right: #303436 solid 15px;
 }
 
 .border-bottom {
-  border-bottom: white solid 5px;
+  border-bottom: #303436 solid 15px;
 }
 
 #picker-container {
@@ -174,40 +174,51 @@ li {
 
 #picker {
   position: fixed;
-  top: 25%;
-  left: 25%;
-  right: 25%;
-  bottom: 25%;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 20;
   margin: auto;
-  width: min(50vh, 50vw);
-  height: min(50vh, 50vw);
-  background-color: white;
+  width: 100vw;
+  height: 32vh;
+  color: rgb(255, 220, 194);
+  background-color: #303436;
+  border: #59312d solid 15px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
 }
 
-#picker row {
+.picker-row {
   margin: auto;
-  height: min(16vh, 16vw);
+  height: 8vh;
   display: flex;
   flex-direction: row;
 }
 
 .choice {
   margin: auto;
-  width: min(16vh, 16vw);
+  width: 33vw;
   display: inline-block;
+  padding: 0;
   text-align: center;
   z-index: inherit;
-  color: black;
+  font-size: 8vw;
+}
+
+.choice p {
+  margin: 0;
 }
 
 #clear {
-  width: min(50vw, 50vh);
+  width: 100vw;
   display: inline-block;
   text-align: center;
-  color: black;
+  font-size: 8vw;
+}
+
+#clear p {
+  margin: 0;
 }
 
 .selected {

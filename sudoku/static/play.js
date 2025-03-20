@@ -43,6 +43,7 @@ function init() {
 
   for (let i = 0; i < 3; i++) {
     row = document.createElement("div");
+    row.classList.add("picker-row");
     for (let j = 0; j < 3; j++) {
       cell = document.createElement("div");
       cell.id = i * 3 + j + 1;
@@ -115,5 +116,32 @@ const modifyBoard = async (cell, value) => {
       },
       body: JSON.stringify([parseInt(cell.id, 10), value]),
     });
+
+    response = await r.json();
+    key = Object.keys(response)[0];
+    if (key != "valid") {
+      cells = response[key];
+      for (let i = 0; i < 9; i++) {
+        function change_color(color) {
+          document.getElementById(cells[i]).style.borderColor = color;
+        }
+        change_color("#99312d");
+        setTimeout(function () {
+          change_color("#303436");
+        }, 300);
+        setTimeout(function () {
+          change_color("#99312d");
+        }, 600);
+        setTimeout(function () {
+          change_color("#303436");
+        }, 900);
+        setTimeout(function () {
+          change_color("#99312d");
+        }, 1200);
+        setTimeout(function () {
+          change_color("#303436");
+        }, 1500);
+      }
+    }
   }
 };
