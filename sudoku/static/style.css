@@ -209,3 +209,7 @@ li {
   text-align: center;
   color: black;
 }
+
+.selected {
+  background-color: rgb(67, 127, 121);
+}

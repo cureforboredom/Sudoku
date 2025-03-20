@@ -23,10 +23,13 @@ def play():
     new_board()
   elif not db.execute('SELECT * FROM boards').fetchone():
     new_board()
-  elif session.get('board_id') != db.execute(
-    "SELECT id FROM boards WHERE id = ?",
-    (session.get('board_id'),)
-  ).fetchone()['id']:
-    print("fixed it")
-    new_board()
+  else:
+    r = db.execute(
+      "SELECT id FROM boards WHERE id = ?",
+      (session.get('board_id'),)
+    )
+    if not r:
+      new_board()
+    elif r.fetchone()['id'] != session.get('board_id'):
+      new_board()
   return render_template('main/play.html')

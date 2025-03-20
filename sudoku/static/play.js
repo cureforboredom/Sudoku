@@ -36,6 +36,7 @@ function init() {
 
   document.getElementById("picker-closer").onclick = function () {
     document.getElementById("picker-container").style.display = "none";
+    selected_cell.classList.remove("selected");
   };
 
   picker = document.getElementById("picker");
@@ -50,6 +51,7 @@ function init() {
       cell.onclick = function () {
         modifyBoard(selected_cell, this.id);
         document.getElementById("picker-container").style.display = "none";
+        selected_cell.classList.remove("selected");
       };
       row.append(cell);
     }
@@ -62,6 +64,7 @@ function init() {
   clear.onclick = function () {
     modifyBoard(selected_cell, 0);
     document.getElementById("picker-container").style.display = "none";
+    selected_cell.classList.remove("selected");
   };
 
   picker.append(clear);
@@ -72,6 +75,7 @@ function init() {
 function startMove() {
   document.getElementById("picker-container").style.display = "flex";
   selected_cell = this;
+  this.classList.add("selected");
 }
 
 const fetchBoard = async () => {
