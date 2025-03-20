@@ -27,7 +27,7 @@ def play():
     r = db.execute(
       "SELECT id FROM boards WHERE id = ?",
       (session.get('board_id'),)
-    )
+    ).fetchone()
     if not r:
       new_board()
     elif r.fetchone()['id'] != session.get('board_id'):
