@@ -98,6 +98,8 @@ body {
   color: rgb(255, 233, 217);
   font-family: "Courier New", Courier, monospace;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
@@ -120,7 +122,15 @@ a:active {
 }
 
 h2 {
+  text-align: center;
+  font-size: 10vw;
+  font-weight: 300;
+}
+
+#main h3 {
+  text-align: center;
   font-size: 6vw;
+  margin-block: 0.3em;
 }
 
 .hamburger-menu {
@@ -244,6 +254,7 @@ li {
 
 .cell {
   font-size: 6vw;
+  font-weight: 650;
   padding-inline: 2.5vw;
   border: #303436 solid 5px;
   background-color: #0c1515;
@@ -333,4 +344,39 @@ li {
 
 .selected {
   background-color: rgb(67, 127, 121);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  margin-left: 20%;
+  margin-top: 10%;
+  font-size: 6vw;
+}
+
+.auth-form > * {
+  margin-bottom: 5px;
+}
+
+.auth-form input {
+  height: 1.5em;
+  border: #303436 solid 5px;
+  border-radius: 20px;
+  margin-bottom: 0.3em;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.auth-form [type="submit"] {
+  margin-top: 0.5em;
+  font-size: 1.3em;
+  font-weight: 700;
+  padding: 5px;
+}
+
+.auth-form input:active {
+  border: #495054 solid 6px;
 }
