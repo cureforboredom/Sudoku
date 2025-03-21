@@ -20,9 +20,9 @@ CREATE TABLE boards (
 CREATE TABLE solved_boards (
   username TEXT NOT NULL,
   board_id INTEGER NOT NULL
-)
+);
 
 CREATE TABLE rooms (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   room_key TEXT NOT NULL
-)
+);
