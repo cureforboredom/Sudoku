@@ -24,5 +24,5 @@ CREATE TABLE solved_boards (
 
 CREATE TABLE rooms (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  room_key TEXT NOT NULL
+  room_key TEXT UNIQUE NOT NULL
 );

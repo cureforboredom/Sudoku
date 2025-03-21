@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, url_for, g
+from flask import Flask, url_for, g, session
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -44,12 +44,23 @@ def create_app(test_config=None):
         return app.send_static_file("pastime.png")
 
     @app.before_request
-    def get_number_of_solves():
-      if g.user:
-        d = db.get_db()
+    def get_g_vars():
+      d = db.get_db()
+      if session.get("user_id"):
         g.solves = d.execute(
-          'select count(distinct board_id) as "count" from solved_boards where username = ?',
-          (g.user["username"],)
+          """
+          SELECT COUNT(DISTINCT board_id) AS "count"
+          FROM solved_boards
+          WHERE username = ?
+          """, (g.user["username"],)
         ).fetchone()['count']
+      if session.get("room_id"):
+        g.room_key = d.execute(
+          """
+          SELECT room_key
+          FROM rooms
+          WHERE id = ?
+          """, (session["room_id"],)
+        ).fetchone()["room_key"]
 
     return app

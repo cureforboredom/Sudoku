@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% block header %}
+<h2>{% block title %}Room Code{% endblock %}</h2>
+{% endblock %} {% block content %} {% if g.room_key %}
+<h3 class="selectable">{{ g.room_key }}</h3>
+{% else %}
+<h3>You are not in a room</h3>
+{% endif %}
+<h2><a href="{{ url_for('main.play')}}">Play</a></h2>
+{% endblock %}

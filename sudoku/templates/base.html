@@ -22,6 +22,9 @@
             <li><span>{{ g.user['username'] }}</span></li>
             <li><span>Solved puzzles: {{ g.solves }}</span></li>
             <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+            {% if g.room_key %}
+            <li><a href="{{ url_for('room.leave') }}">Leave Room</a></li>
+            {% endif %}
           {% else %}
             <li><a href="{{ url_for('auth.register') }}">Register</a>
             <li><a href="{{ url_for('auth.login') }}">Log In</a>

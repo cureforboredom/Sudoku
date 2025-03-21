@@ -127,7 +127,7 @@ h2 {
   font-weight: 300;
 }
 
-#main h3 {
+.content h3 {
   text-align: center;
   font-size: 6vw;
   margin-block: 0.3em;
@@ -346,7 +346,7 @@ li {
   background-color: rgb(67, 127, 121);
 }
 
-.auth-form {
+.form {
   display: flex;
   flex-direction: column;
   width: 60vw;
@@ -355,11 +355,11 @@ li {
   font-size: 6vw;
 }
 
-.auth-form > * {
+.form > * {
   margin-bottom: 5px;
 }
 
-.auth-form input {
+.form input {
   height: 1.5em;
   border: #303436 solid 5px;
   border-radius: 20px;
@@ -370,13 +370,17 @@ li {
   -moz-user-select: none;
 }
 
-.auth-form [type="submit"] {
+.form [type="submit"] {
   margin-top: 0.5em;
   font-size: 1.3em;
   font-weight: 700;
   padding: 5px;
 }
 
-.auth-form input:active {
+.form input:active {
   border: #495054 solid 6px;
+}
+
+.selectable {
+  user-select: text !important;
 }

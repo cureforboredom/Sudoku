@@ -18,7 +18,11 @@ def load_logged_in_user():
     g.user = None
   else:
     g.user = get_db().execute(
-      'SELECT * FROM users WHERE id = ?', (user_id,)
+      """
+      SELECT *
+      FROM users
+      WHERE id = ?
+      """, (user_id,)
     ).fetchone()
 
 
@@ -40,8 +44,11 @@ def register():
         board_id = session["board_id"] if session.get("board_id") else None
 
         db.execute(
-          "INSERT INTO users (username, password, board_id) VALUES (?, ?, ?)",
-          (username, generate_password_hash(password), board_id),
+          """
+          INSERT INTO users
+          (username, password, board_id)
+          VALUES (?, ?, ?)
+          """, (username, generate_password_hash(password), board_id),
         )
         db.commit()
       except db.IntegrityError:
@@ -62,7 +69,11 @@ def login():
     db = get_db()
     error = None
     user = db.execute(
-      'SELECT * FROM users WHERE username = ?', (username,)
+      """
+      SELECT *
+      FROM users
+      WHERE username = ?
+      """, (username,)
     ).fetchone()
 
     if user is None:
@@ -72,10 +83,24 @@ def login():
 
     if error is None:
       session['user_id'] = user['id']
-      if session.get('board_id'):
+      
+      room = db.execute(
+        """
+        SELECT room
+        FROM users
+        WHERE id = ?
+        """, (session['user_id'],)
+      ).fetchone()
+      
+      if room:
+        session["room_id"] = room["room"]
+      elif session.get('board_id'):
         db.execute(
-          'UPDATE users SET board_id = ? WHERE id = ?',
-          (session['board_id'], user['id'])
+          """
+          UPDATE users
+          SET board_id = ?
+          WHERE id = ?
+          """, (session['board_id'], user['id'])
         )
         db.commit()
       else:
@@ -89,7 +114,7 @@ def login():
 
 @bp.route('/logout')
 def logout():
-  session.pop('user_id', None)
+  session.clear()
   return redirect(url_for('index'))
 
 

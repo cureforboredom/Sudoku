@@ -14,8 +14,11 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 def load_board():
   db = get_db()
   return json.loads(db.execute(
-    "SELECT board FROM boards WHERE id = ?",
-    (session["board_id"],)
+    """
+    SELECT board
+    FROM boards
+    WHERE id = ?
+    """, (session["board_id"],)
   ).fetchone()[0])
 
 def check_cell(x, y, v):
@@ -53,20 +56,35 @@ def new_board():
     board = []
     for old_row in b:
       board.append([(cell, False) if cell else (cell, True) for cell in old_row])
-            
-    db.execute(
-      "INSERT INTO boards (board) VALUES (?) RETURNING id",
-      (json.dumps(board),),
-    )
-    db.commit()
     
-    row = db.execute("select last_insert_rowid()").fetchone()
-    
-    (session["board_id"], ) = row if row else None
+    if session.get("room_id"):
+      session["board_id"] = db.execute(
+        """
+        INSERT INTO boards
+        (board, room)
+        VALUES (?, ?)
+        RETURNING id
+        """, (json.dumps(board),session["room_id"])
+      ).fetchone()["id"]
+      db.commit()
+    else:
+      session["board_id"] = db.execute(
+        """
+        INSERT INTO boards
+        (board)
+        VALUES (?)
+        RETURNING id
+        """, (json.dumps(board),)
+      ).fetchone()["id"]
+      db.commit()
+      
     if session.get('user_id'):
       db.execute(
-        "UPDATE users SET board_id = ? WHERE id = ?",
-        (session["board_id"], session["user_id"])
+        """
+        UPDATE users
+        SET board_id = ?
+        WHERE id = ?
+        """, (session["board_id"], session["user_id"])
       )
       db.commit()
     return redirect(url_for("main.play"))
@@ -106,8 +124,11 @@ def modify_board():
     db = get_db()
 
     db.execute(
-      "UPDATE boards SET board = ? WHERE id = ?",
-      (json.dumps(board), session["board_id"])
+      """
+      UPDATE boards
+      SET board = ?
+      WHERE id = ?
+      """, (json.dumps(board), session["board_id"])
     )
     db.commit()
 
@@ -147,8 +168,11 @@ def check_board():
   if valid == "True" and session.get('user_id'):
     db = get_db()
     db.execute(
-      'INSERT INTO solved_boards (username, board_id) VALUES (?, ?)',
-      (g.user['username'], session['board_id'])
+      """
+      INSERT INTO solved_boards
+      (username, board_id)
+      VALUES (?, ?)
+      """, (g.user['username'], session['board_id'])
     )
     db.commit()
 
@@ -171,8 +195,11 @@ def debug_set_valid_board():
   db = get_db()
 
   db.execute(
-    "UPDATE boards SET board = ? WHERE id = ?",
-    (json.dumps(board), session["board_id"])
+    """
+    UPDATE boards
+    SET board = ?
+    WHERE id = ?
+    """, (json.dumps(board), session["board_id"])
   )
   db.commit()
   
