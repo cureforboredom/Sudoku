@@ -8,18 +8,27 @@
   </head>
   <body>
     <h1><a href="{{ url_for('index') }}">Sudoku</a></h1>
-    <nav>
-      <ul>
-        {% if g.user %}
-          <li><span>{{ g.user['username'] }}</span></li>
-          <li><span>Solved puzzles: {{ g.solves }}</span></li>
-          <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-        {% else %}
-          <li><a href="{{ url_for('auth.register') }}">Register</a>
-          <li><a href="{{ url_for('auth.login') }}">Log In</a>
-        {% endif %}
-      </ul>
-    </nav>
+    <div class="hamburger-menu">
+      <input type="checkbox" id="menu-toggle"/>
+      <label for="menu-toggle" class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+      <nav>
+        <li><h3><a href="{{ url_for('index') }}">Sudoku</a></h3></li>
+        <ul>
+          {% if g.user %}
+            <li><span>{{ g.user['username'] }}</span></li>
+            <li><span>Solved puzzles: {{ g.solves }}</span></li>
+            <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+          {% else %}
+            <li><a href="{{ url_for('auth.register') }}">Register</a>
+            <li><a href="{{ url_for('auth.login') }}">Log In</a>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
     <section class="content">
       <header>
         {% block header %}{% endblock %}

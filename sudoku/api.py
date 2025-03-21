@@ -3,7 +3,7 @@ import requests, json
 from hashlib import sha1
 
 from flask import (
-  Blueprint, g, request, session, url_for, jsonify
+  Blueprint, g, request, session, url_for, jsonify, redirect
 )
 
 from sudoku.auth import login_required
@@ -69,7 +69,7 @@ def new_board():
         (session["board_id"], session["user_id"])
       )
       db.commit()
-    return '', 204
+    return redirect(url_for("main.play"))
   else:
     return "Couldn't get a new board at this time.", 404
   
