@@ -1,20 +1,28 @@
 DROP TABLE IF EXISTS boards;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS solved_boards;
+DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
-  board_id INTEGER
+  board_id INTEGER,
+  room INTEGER
 );
 
 CREATE TABLE boards (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  board TEXT NOT NULL
+  board TEXT NOT NULL,
+  room INTEGER
 );
 
 CREATE TABLE solved_boards (
   username TEXT NOT NULL,
   board_id INTEGER NOT NULL
+)
+
+CREATE TABLE rooms (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  room_key TEXT NOT NULL
 )

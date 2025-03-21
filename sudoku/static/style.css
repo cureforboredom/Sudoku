@@ -233,6 +233,10 @@ li {
   margin: 0;
 }
 
+.highlighted {
+  background-color: rgb(120, 120, 64);
+}
+
 .selected {
   background-color: rgb(67, 127, 121);
 }

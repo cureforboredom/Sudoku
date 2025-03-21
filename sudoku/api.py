@@ -1,4 +1,4 @@
-import requests, json, logging
+import requests, json
 
 from hashlib import sha1
 
@@ -10,14 +10,6 @@ from sudoku.auth import login_required
 from sudoku.db import get_db
 
 bp = Blueprint('api', __name__, url_prefix='/api')
-
-logging.basicConfig(
-  encoding="utf-8",
-  format="{asctime} - {levelname} - {message}",
-  style="{",
-  datefmt="%Y-%m-%d %H:%M",
-  level=logging.DEBUG,
-)
 
 def load_board():
   db = get_db()
@@ -78,6 +70,8 @@ def new_board():
       )
       db.commit()
     return '', 204
+  else:
+    return "Couldn't get a new board at this time.", 404
   
 @bp.route('/get_board')
 def get_board():

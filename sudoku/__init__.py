@@ -32,6 +32,9 @@ def create_app(test_config=None):
     app.register_blueprint(main.bp)
     app.add_url_rule('/', endpoint='index')
     
+    from . import room
+    app.register_blueprint(room.bp)
+    
     @app.route('/images/pastime.png')
     def pastime():
         return app.send_static_file("pastime.png")

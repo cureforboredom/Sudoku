@@ -28,7 +28,7 @@ function init() {
       }
       cell.id = i * 9 + j;
       cell.innerHTML = "<p>0</p>";
-      cell.onclick = startMove;
+      cell.onclick = cellClicked;
 
       row.append(cell);
     }
@@ -51,11 +51,7 @@ function init() {
       cell.id = i * 3 + j + 1;
       cell.classList.add("choice");
       cell.innerHTML = "<p>" + (i * 3 + j + 1) + "</p>";
-      cell.onclick = function () {
-        modifyBoard(selected_cell, this.id);
-        document.getElementById("picker-container").style.display = "none";
-        selected_cell.classList.remove("selected");
-      };
+      cell.onclick = choose;
       row.append(cell);
     }
     picker.append(row);
@@ -64,15 +60,22 @@ function init() {
   clear = document.createElement("div");
   clear.id = "clear";
   clear.innerHTML = "<p>Clear</p>";
-  clear.onclick = function () {
-    modifyBoard(selected_cell, 0);
-    document.getElementById("picker-container").style.display = "none";
-    selected_cell.classList.remove("selected");
-  };
+  clear.onclick = choose;
 
   picker.append(clear);
 
   intervalID = window.setInterval(update, 1000);
+}
+
+function choose() {
+  if (this.id == "clear") {
+    modifyBoard(selected_cell, 0);
+  } else {
+    modifyBoard(selected_cell, this.id);
+  }
+  document.getElementById("picker-container").style.display = "none";
+  selected_cell.classList.remove("selected");
+  highlight("none");
 }
 
 function win() {
@@ -80,10 +83,25 @@ function win() {
   alert("you win!");
 }
 
-function startMove() {
-  document.getElementById("picker-container").style.display = "flex";
-  selected_cell = this;
-  this.classList.add("selected");
+function highlight(n) {
+  divs = document.getElementsByClassName("cell");
+  for (let i = 0; i < divs.length; i++) {
+    value = divs[i].innerHTML;
+    if (value.includes(n) && !value.includes("0")) {
+      divs[i].classList.add("highlighted");
+    } else {
+      divs[i].classList.remove("highlighted");
+    }
+  }
+}
+
+function cellClicked() {
+  highlight(this.innerHTML);
+  if (this.classList.contains("editable")) {
+    document.getElementById("picker-container").style.display = "flex";
+    selected_cell = this;
+    this.classList.add("selected");
+  }
 }
 
 const fetchBoard = async () => {
@@ -103,7 +121,6 @@ const update = async () => {
       win();
     }
   } else {
-    console.log("here");
     await fetchBoard();
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
@@ -111,11 +128,9 @@ const update = async () => {
         if (current_board[i][j][1]) {
           cell.classList.remove("uneditable");
           cell.classList.add("editable");
-          cell.onclick = startMove;
         } else {
           cell.classList.remove("editable");
           cell.classList.add("uneditable");
-          cell.onclick = null;
         }
         cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
       }
