@@ -27,7 +27,7 @@ function init() {
         cell.classList.add("border-right");
       }
       cell.id = i * 9 + j;
-      cell.innerHTML = "<p>0</p>";
+      cell.innerHTML = "<p>&nbsp;</p>";
       cell.onclick = cellClicked;
 
       row.append(cell);
@@ -87,7 +87,7 @@ function highlight(n) {
   divs = document.getElementsByClassName("cell");
   for (let i = 0; i < divs.length; i++) {
     value = divs[i].innerHTML;
-    if (value.includes(n) && !value.includes("0")) {
+    if (value.includes(n) && !value.includes("&nbsp;")) {
       divs[i].classList.add("highlighted");
     } else {
       divs[i].classList.remove("highlighted");
@@ -115,7 +115,7 @@ const fetchBoard = async () => {
 
 const update = async () => {
   board = document.getElementById("board");
-  if (!board.innerHTML.includes("<p>0</p>")) {
+  if (!board.innerHTML.includes("<p>&nbsp;</p>")) {
     const r = await fetch("/api/check_board");
     if ((await r.text()) == "True") {
       win();
@@ -132,7 +132,11 @@ const update = async () => {
           cell.classList.remove("editable");
           cell.classList.add("uneditable");
         }
-        cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
+        if (current_board[i][j][0] != 0) {
+          cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
+        } else {
+          cell.innerHTML = "<p>&nbsp;</p>";
+        }
       }
     }
   }
