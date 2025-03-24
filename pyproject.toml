@@ -2,12 +2,16 @@
 name = "sudoku"
 version = "0.1.0"
 description = "An online multiplayer sudoku app."
+requires-python = ">=3.13"
 dependencies = [
-  "flask",
-  "gunicorn",
-  "requests",
+    "flask (>=3.1.0,<4.0.0)",
+    "gunicorn (>=23.0.0,<24.0.0)",
+    "requests (>=2.32.3,<3.0.0)"
 ]
 
 [build-system]
 requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
+
+[tool.poetry]
+package-mode = false
