@@ -13,6 +13,20 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 
 def load_board():
   db = get_db()
+  
+  if session.get("room_id"):
+    if row := db.execute(
+      """
+      SELECT id
+      FROM boards
+      WHERE room = ?
+      ORDER BY id
+      DESC
+      LIMIT 1
+      """, (session["room_id"],)
+    ).fetchone():
+      session["board_id"] = row["id"]
+
   return json.loads(db.execute(
     """
     SELECT board

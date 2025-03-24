@@ -1,3 +1,0 @@
-BUG: when players are in a room, they won't see the new board because they stay on the old board_id. Need to send the newest board in the room to the user when they are in a room.
-
-Feature: notes. 
