@@ -6,7 +6,7 @@
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
   </head>
-  <body>
+  <body onload="if (i = document.getElementById('username')) {i.focus();}">
     <h1><a href="{{ url_for('index') }}">Sudoku</a></h1>
     <div class="hamburger-menu">
       <input type="checkbox" id="menu-toggle"/>

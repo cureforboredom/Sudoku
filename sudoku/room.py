@@ -1,5 +1,5 @@
 from flask import (
-  Flask, Blueprint, g, render_template, redirect, session, url_for, request
+  Flask, Blueprint, g, render_template, redirect, session, url_for, request, flash
 )
 
 from sudoku.auth import login_required
@@ -47,17 +47,16 @@ def join():
   if request.method == 'POST':
     db = get_db()
 
-    room = request.form["room_code"]
+    room = request.form["room_code"].upper()
 
-    room_id = db.execute(
+    if room_id := db.execute(
       """
       SELECT id
       FROM rooms
       WHERE room_key = ?
       """, (room,)
-    ).fetchone()["id"]
-    
-    if room_id:
+    ).fetchone():
+      room_id = room_id["id"]
       db.execute(
         """
         UPDATE users

@@ -57,12 +57,19 @@ def create_app(test_config=None):
         ).fetchone():
           session.clear()
         else:
+          username = d.execute(
+            """
+            SELECT username
+            FROM users
+            WHERE id = ?
+            """, (session["user_id"],)
+          ).fetchone()['username']
           g.solves = d.execute(
             """
             SELECT COUNT(DISTINCT board_id) AS "count"
             FROM solved_boards
             WHERE username = ?
-            """, (g.user["username"],)
+            """, (username,)
           ).fetchone()['count']
       if session.get("room_id"):
         if not d.execute(

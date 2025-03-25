@@ -266,7 +266,7 @@ li {
 .cell span {
   position: absolute;
   display: block;
-  font-size: 3vw;
+  font-size: 3.5vw;
 }
 
 .cell span:nth-of-type(1) {
@@ -474,4 +474,17 @@ li {
 
 .selectable {
   user-select: text !important;
+}
+
+.flash {
+  width: 100vw;
+  font-size: 6vw;
+  background-color: white;
+  color: black;
+  font-weight: 900;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  padding: 0.2em;
+  margin-bottom: -1em;
+  margin-top: 0.2em;
 }
