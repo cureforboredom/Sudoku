@@ -177,7 +177,7 @@ def add_note():
       notes[y][x].remove(v)
     else:
       if len(notes[y][x]) < 4:
-        notes[y][x].append(v)
+        notes[y][x] = sorted(notes[y][x] + [v])
   else:
     print("here")
     notes[y][x] = []

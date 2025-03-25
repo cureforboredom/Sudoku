@@ -111,9 +111,6 @@ function note() {
   } else {
     addNote(selected_cell, this.id);
   }
-  document.getElementById("picker-container").style.display = "none";
-  selected_cell.classList.remove("selected");
-  highlight("none");
 }
 
 function win() {
