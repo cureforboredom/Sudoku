@@ -1,3 +1,3 @@
 #!/bin/sh
 poetry install
-flask --app sudoku init-db
+poetry run flask --app sudoku init-db
