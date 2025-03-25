@@ -2,6 +2,8 @@ import os
 
 from flask import Flask, url_for, g, session
 
+from sudoku.auth import login_required
+
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -47,20 +49,35 @@ def create_app(test_config=None):
     def get_g_vars():
       d = db.get_db()
       if session.get("user_id"):
-        g.solves = d.execute(
+        if not d.execute(
           """
-          SELECT COUNT(DISTINCT board_id) AS "count"
-          FROM solved_boards
-          WHERE username = ?
-          """, (g.user["username"],)
-        ).fetchone()['count']
+          SELECT *
+          FROM users
+          """
+        ).fetchone():
+          session.clear()
+        else:
+          g.solves = d.execute(
+            """
+            SELECT COUNT(DISTINCT board_id) AS "count"
+            FROM solved_boards
+            WHERE username = ?
+            """, (g.user["username"],)
+          ).fetchone()['count']
       if session.get("room_id"):
-        g.room_key = d.execute(
+        if not d.execute(
           """
-          SELECT room_key
-          FROM rooms
-          WHERE id = ?
-          """, (session["room_id"],)
-        ).fetchone()["room_key"]
-
+          SELECT *
+          FROM users
+          """
+        ).fetchone():
+          session.clear()
+        else:
+          g.room_key = d.execute(
+            """
+            SELECT room_key
+            FROM rooms
+            WHERE id = ?
+            """, (session["room_id"],)
+          ).fetchone()["room_key"]
     return app

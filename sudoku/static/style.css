@@ -253,6 +253,7 @@ li {
 }
 
 .cell {
+  position: relative;
   font-size: 6vw;
   font-weight: 650;
   padding-inline: 3vw;
@@ -260,6 +261,32 @@ li {
   border: #333840 solid 4px;
   background-color: #0c1515;
   user-select: none;
+}
+
+.cell span {
+  position: absolute;
+  display: block;
+  font-size: 3vw;
+}
+
+.cell span:nth-of-type(1) {
+  top: 0.1em;
+  left: 0.3em;
+}
+
+.cell span:nth-of-type(2) {
+  top: 0.1em;
+  right: 0.3em;
+}
+
+.cell span:nth-of-type(3) {
+  bottom: 0.1em;
+  left: 0.3em;
+}
+
+.cell span:nth-of-type(4) {
+  bottom: 0.1em;
+  right: 0.3em;
 }
 
 .uneditable {
@@ -290,6 +317,68 @@ li {
   z-index: 10;
 }
 
+.radio {
+  display: none;
+}
+
+.tab {
+  position: fixed;
+  bottom: 24.3vh;
+  z-index: 100;
+}
+
+#tab-picker-label {
+  left: 1vw;
+}
+
+#tab-notes-label {
+  right: 1vw;
+}
+
+.tab span {
+  display: block;
+  width: 49vw;
+  height: 5vh;
+  background-color: #495054;
+  border: #59312d solid 10px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 101;
+  text-align: center;
+  padding-top: 0.35em;
+  font-size: 5vw;
+}
+
+.radio:checked + .tab span {
+  color: white;
+  text-decoration: underline;
+}
+
+#tab-picker:checked ~ #picker {
+  display: flex;
+}
+
+#tab-notes:checked ~ #picker-notes {
+  display: flex;
+}
+
+#picker-notes {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  margin: auto;
+  width: 100vw;
+  height: 24vh;
+  color: rgb(255, 220, 194);
+  background-color: #333840;
+  border: #59312d solid 15px;
+  border-radius: 20px;
+  display: none;
+  flex-direction: column;
+}
+
 #picker {
   position: fixed;
   left: 0;
@@ -298,18 +387,18 @@ li {
   z-index: 20;
   margin: auto;
   width: 100vw;
-  height: 32vh;
+  height: 24vh;
   color: rgb(255, 220, 194);
   background-color: #333840;
   border: #59312d solid 15px;
   border-radius: 20px;
-  display: flex;
+  display: none;
   flex-direction: column;
 }
 
 .picker-row {
   margin: auto;
-  height: 8vh;
+  height: 6vh;
   display: flex;
   flex-direction: row;
 }
@@ -333,6 +422,7 @@ li {
   display: inline-block;
   text-align: center;
   font-size: 8vw;
+  margin-top: -0.2em;
 }
 
 #clear p {

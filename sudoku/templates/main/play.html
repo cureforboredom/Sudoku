@@ -5,8 +5,19 @@
   <h3><a href="{{ url_for('api.new_board') }}">New Board</a></h3>
   <div id="board"></div>
   <div id="picker-container">
-    <div id="picker-closer"></div>
-    <div id="picker"></div>
+    <form id="chosen-tab">
+      <div id="picker-closer"></div>
+      <input type="radio" class="radio" name="tabs" id="tab-picker" value="picker" checked="checked">
+      <label class="tab" id="tab-picker-label" for="tab-picker">
+        <span>Numbers</span>
+      </label>
+      <input type="radio" class="radio" name="tabs" id="tab-notes" value="picker-notes">
+      <label class="tab" id="tab-notes-label" for="tab-notes">
+        <span>Notes</span>
+      </label>
+      <div id="picker"></div>
+      <div id="picker-notes"></div>
+    </form>
   </div>
 </section>
 {% endblock %}

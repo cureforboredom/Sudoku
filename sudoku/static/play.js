@@ -2,7 +2,11 @@ document.body.onload = init;
 
 current_board_hash = "";
 
+current_notes_hash = "";
+
 current_board = [];
+
+current_notes = [];
 
 have_set_editable = false;
 
@@ -27,7 +31,7 @@ function init() {
         cell.classList.add("border-right");
       }
       cell.id = i * 9 + j;
-      cell.innerHTML = "<p>&nbsp;</p>";
+      cell.innerHTML = "<p>&nbsp;</p><span></span><span></span><span></span><span></span>";
       cell.onclick = cellClicked;
 
       row.append(cell);
@@ -40,7 +44,7 @@ function init() {
     document.getElementById("picker-container").style.display = "none";
     selected_cell.classList.remove("selected");
   };
-
+  
   picker = document.getElementById("picker");
 
   for (let i = 0; i < 3; i++) {
@@ -63,6 +67,29 @@ function init() {
   clear.onclick = choose;
 
   picker.append(clear);
+  
+  picker_notes = document.getElementById("picker-notes");
+
+  for (let i = 0; i < 3; i++) {
+    row = document.createElement("div");
+    row.classList.add("picker-row");
+    for (let j = 0; j < 3; j++) {
+      cell = document.createElement("div");
+      cell.id = i * 3 + j + 1;
+      cell.classList.add("choice");
+      cell.innerHTML = "<p>" + (i * 3 + j + 1) + "</p>";
+      cell.onclick = note;
+      row.append(cell);
+    }
+    picker_notes.append(row);
+  }
+
+  clear = document.createElement("div");
+  clear.id = "clear";
+  clear.innerHTML = "<p>Clear</p>";
+  clear.onclick = note;
+
+  picker_notes.append(clear);
 
   intervalID = window.setInterval(update, 1000);
 }
@@ -78,6 +105,17 @@ function choose() {
   highlight("none");
 }
 
+function note() {
+  if (this.id == "clear") {
+    addNote(selected_cell, 0);
+  } else {
+    addNote(selected_cell, this.id);
+  }
+  document.getElementById("picker-container").style.display = "none";
+  selected_cell.classList.remove("selected");
+  highlight("none");
+}
+
 function win() {
   window.clearInterval(intervalID);
   alert("you win!");
@@ -86,7 +124,7 @@ function win() {
 function highlight(n) {
   divs = document.getElementsByClassName("cell");
   for (let i = 0; i < divs.length; i++) {
-    value = divs[i].innerHTML;
+    value = divs[i].firstChild.innerHTML;
     if (value.includes(n) && !value.includes("&nbsp;")) {
       divs[i].classList.add("highlighted");
     } else {
@@ -96,7 +134,7 @@ function highlight(n) {
 }
 
 function cellClicked() {
-  highlight(this.innerHTML);
+  highlight(this.firstChild.innerHTML);
   if (this.classList.contains("editable")) {
     document.getElementById("picker-container").style.display = "flex";
     selected_cell = this;
@@ -113,6 +151,15 @@ const fetchBoard = async () => {
   }
 };
 
+const fetchNotes = async () => {
+  const r = await fetch("/api/get_notes?hash=" + current_notes_hash);
+  if ((await r.status) != 204) {
+    const data = await r.json();
+    current_notes_hash = data["hash"];
+    current_notes = data["notes"];
+  }
+};
+
 const update = async () => {
   board = document.getElementById("board");
   if (!board.innerHTML.includes("<p>&nbsp;</p>")) {
@@ -122,6 +169,7 @@ const update = async () => {
     }
   } else {
     await fetchBoard();
+    await fetchNotes();
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         cell = document.getElementById(i * 9 + j);
@@ -133,14 +181,33 @@ const update = async () => {
           cell.classList.add("uneditable");
         }
         if (current_board[i][j][0] != 0) {
-          cell.innerHTML = "<p>" + current_board[i][j][0] + "</p>";
+          cell.firstChild.innerHTML = current_board[i][j][0];
         } else {
-          cell.innerHTML = "<p>&nbsp;</p>";
+          cell.firstChild.innerHTML = "&nbsp;";
+        }
+        for (let k = 0; k < 4; k++) {
+          if (current_notes[i][j].length > k) {
+            cell.children[(k+1)].innerHTML = current_notes[i][j][k];
+          } else {
+            cell.children[(k+1)].innerHTML = "";
+          }
         }
       }
     }
   }
 };
+
+const addNote = async (cell, value) => {
+  if (cell.classList.contains("editable")) {
+    const r = await fetch("/api/add_note", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([parseInt(cell.id, 10), value]),
+    });
+  }
+}
 
 const modifyBoard = async (cell, value) => {
   if (cell.classList.contains("editable")) {

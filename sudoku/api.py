@@ -11,6 +11,30 @@ from sudoku.db import get_db
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
+def load_notes():
+  db = get_db()
+  
+  if session.get("room_id"):
+    if row := db.execute(
+      """
+      SELECT id
+      FROM boards
+      WHERE room = ?
+      ORDER BY id
+      DESC
+      LIMIT 1
+      """, (session["room_id"],)
+    ).fetchone():
+      session["board_id"] = row["id"]
+
+  return json.loads(db.execute(
+    """
+    SELECT notes
+    FROM boards
+    WHERE id = ?
+    """, (session["board_id"],)
+  ).fetchone()["notes"])
+
 def load_board():
   db = get_db()
   
@@ -33,7 +57,7 @@ def load_board():
     FROM boards
     WHERE id = ?
     """, (session["board_id"],)
-  ).fetchone()[0])
+  ).fetchone()["board"])
 
 def check_cell(x, y, v):
   board = load_board()
@@ -70,25 +94,31 @@ def new_board():
     board = []
     for old_row in b:
       board.append([(cell, False) if cell else (cell, True) for cell in old_row])
+    notes = []
+    for i in range(9):
+      row = []
+      for j in range(9):
+        row.append([])
+      notes.append(row)
     
     if session.get("room_id"):
       session["board_id"] = db.execute(
         """
         INSERT INTO boards
-        (board, room)
-        VALUES (?, ?)
+        (board, room, notes)
+        VALUES (?, ?, ?)
         RETURNING id
-        """, (json.dumps(board),session["room_id"])
+        """, (json.dumps(board),session["room_id"],json.dumps(notes))
       ).fetchone()["id"]
       db.commit()
     else:
       session["board_id"] = db.execute(
         """
         INSERT INTO boards
-        (board)
-        VALUES (?)
+        (board, notes)
+        VALUES (?, ?)
         RETURNING id
-        """, (json.dumps(board),)
+        """, (json.dumps(board),json.dumps(notes))
       ).fetchone()["id"]
       db.commit()
       
@@ -105,6 +135,19 @@ def new_board():
   else:
     return "Couldn't get a new board at this time.", 404
   
+@bp.route('/get_notes')
+def get_notes():
+  hash = request.args.get('hash')
+
+  notes = load_notes()
+
+  new_hash = sha1(str(notes).encode("utf-8")).hexdigest()
+
+  if not hash == new_hash:
+    return {"notes": notes, "hash": new_hash}
+  else:
+    return '', 204
+
 @bp.route('/get_board')
 def get_board():
   hash = request.args.get('hash')
@@ -117,6 +160,39 @@ def get_board():
     return {"board": board, "hash": new_hash}
   else:
     return '', 204
+
+@bp.route('/add_note', methods=['POST'])
+def add_note():
+  r = request.get_json()
+  y = r[0] // 9
+  x = r[0] % 9
+  v = int(r[1])
+  
+  db = get_db()
+  
+  notes = load_notes()
+  
+  if v:
+    if v in notes[y][x]:
+      notes[y][x].remove(v)
+    else:
+      if len(notes[y][x]) < 4:
+        notes[y][x].append(v)
+  else:
+    print("here")
+    notes[y][x] = []
+    print(notes[y][x])
+    
+  db.execute(
+    """
+    UPDATE boards
+    SET notes = ?
+    WHERE id = ?
+    """, (json.dumps(notes), session['board_id'])
+  )
+  db.commit()
+  
+  return '', 204
   
 @bp.route('/modify_board', methods=['POST'])
 def modify_board():
