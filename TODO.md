@@ -1,1 +1,1 @@
-Feature: notes. 
+Feature: notes: sorted numerically before being placed in spans. Don't close the notes until you click off.
