@@ -1,3 +1,3 @@
 #!/bin/sh
-pip install .
+poetry install .
 flask --app sudoku init-db
